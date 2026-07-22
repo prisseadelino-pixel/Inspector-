@@ -1,0 +1,16 @@
+{
+  "name": "Chipeur arrête de Shipper",
+  "short_name": "Chipeur",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffedd5",
+  "theme_color": "#ea580c",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

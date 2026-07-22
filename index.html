@@ -268,6 +268,12 @@
       color: #64748b;
     }
 
+    .commande-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
     .btn-edit-small {
       background: #ffffff;
       border: 1px solid var(--border);
@@ -281,6 +287,21 @@
 
     .btn-edit-small:hover {
       background: var(--border);
+    }
+
+    .btn-delete-small {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #ef4444;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-delete-small:hover {
+      background: #fee2e2;
     }
 
     /* --- MODAL ZOOM IMAGE --- */
@@ -598,6 +619,19 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    window.supprimerCommande = function(id, event) {
+      if (event) event.stopPropagation();
+      const item = commandes.find(c => c.id === id);
+      if (!item) return;
+
+      if (confirm(`Voulez-vous vraiment supprimer la commande ${item.numero} ?`)) {
+        commandes = commandes.filter(c => c.id !== id);
+        localStorage.setItem('commandes_prepa', JSON.stringify(commandes));
+        if (modeEditionId === id) reinitialiserFormulaire();
+        afficherGalerie(inputRecherche.value);
+      }
+    };
+
     btnViderHistorique.addEventListener('click', () => {
       if (confirm("Voulez-vous vraiment effacer tout l'historique des photos ?")) {
         commandes = [];
@@ -628,7 +662,10 @@
               <div class="commande-date-compact">${cmd.date}</div>
             </div>
           </div>
-          <button class="btn-edit-small" onclick="editerCommande(${cmd.id}, event)">✏️ Modifier</button>
+          <div class="commande-actions">
+            <button class="btn-edit-small" onclick="editerCommande(${cmd.id}, event)">✏️ Modifier</button>
+            <button class="btn-delete-small" onclick="supprimerCommande(${cmd.id}, event)">❌</button>
+          </div>
         `;
         galerieCommandes.appendChild(item);
       });

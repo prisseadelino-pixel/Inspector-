@@ -384,7 +384,7 @@
 
     <!-- SECTION RECHERCHE -->
     <section class="card" style="padding: 1rem;">
-      <input type="text" id="recherche" placeholder="🔍 Rechercher par numéro...">
+      <input type="text" id="recherche" placeholder="🔍 Rechercher par numéro..." autocomplete="off">
     </section>
 
     <!-- NOUVELLE PREPARATION -->
@@ -392,7 +392,8 @@
       <h2 id="formTitle" style="font-size: 1.1rem; margin-bottom:1rem; color:var(--primary);">Nouvelle Préparation</h2>
       <div class="form-group">
         <label for="numeroCommande">Numéro de Commande</label>
-        <input type="text" id="numeroCommande" placeholder="ex: 100311">
+        <!-- Ajout de autocomplete="off" pour bloquer la mémorisation du navigateur -->
+        <input type="text" id="numeroCommande" name="no_autofill_cmd" autocomplete="off" placeholder="ex: 100311" value="">
       </div>
 
       <div class="form-group">
@@ -412,7 +413,7 @@
 
       <div class="form-group">
         <label for="notes">Remarques (optionnel)</label>
-        <textarea id="notes" rows="2" placeholder="Ex: Produit fragile, carton réutilisé..."></textarea>
+        <textarea id="notes" rows="2" placeholder="Ex: Produit fragile, carton réutilisé..." autocomplete="off"></textarea>
       </div>
 
       <div style="display:flex; gap:0.5rem;">
@@ -449,6 +450,8 @@
     btnCommencer.addEventListener('click', () => {
       homeScreen.style.display = 'none';
       appScreen.style.display = 'block';
+      // S'assure que le champ est bien vidé à l'ouverture
+      document.getElementById('numeroCommande').value = "";
     });
 
     btnRetourAccueil.addEventListener('click', () => {
@@ -485,6 +488,7 @@
     const closeModal = document.getElementById('closeModal');
 
     window.addEventListener('DOMContentLoaded', () => {
+      inputNumero.value = ""; // Force le vidage au chargement
       afficherGalerie();
     });
 

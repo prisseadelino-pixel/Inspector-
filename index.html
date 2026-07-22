@@ -286,13 +286,35 @@
       align-items: center;
       justify-content: center;
       padding: 1rem;
+      flex-direction: column;
+    }
+
+    .modal-content-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 95%;
+      max-height: 90vh;
     }
 
     .modal img {
-      max-width: 95%;
-      max-height: 85vh;
+      max-width: 100%;
+      max-height: 70vh;
       border-radius: 8px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      object-fit: contain;
+    }
+
+    .modal-notes {
+      color: white;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      max-width: 500px;
+      text-align: center;
+      font-size: 0.95rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .modal-close {
@@ -303,6 +325,7 @@
       font-size: 2rem;
       font-weight: bold;
       cursor: pointer;
+      z-index: 1001;
     }
   </style>
 </head>
@@ -314,8 +337,8 @@
       <img src="https://i49.servimg.com/u/f49/11/31/89/70/picsar10.png" alt="Chipeur">
     </div>
     <h1 class="app-title">Chipeur, arrête de Shipper&nbsp;!</h1>
-    <p class="app-subtitle">Prenez en photo vos preparations de commandes et gardez une preuve visuelle incontestable.</p>
-    <button class="btn-start" id="btnCommencer">🚀 Lancer les preparations</button>
+    <p class="app-subtitle">Prenez en photo vos préparations de commandes et gardez une preuve visuelle incontestable.</p>
+    <button class="btn-start" id="btnCommencer">🚀 Lancer les préparations</button>
   </div>
 
   <!-- APPLICATION -->
@@ -377,10 +400,13 @@
     </section>
   </div>
 
-  <!-- MODAL ZOOM PHOTO -->
+  <!-- MODAL ZOOM PHOTO & COMMENTAIRE -->
   <div id="imageModal" class="modal">
     <span class="modal-close" id="closeModal">&times;</span>
-    <img id="modalImg" src="" alt="Zoom photo">
+    <div class="modal-content-container">
+      <img id="modalImg" src="" alt="Zoom photo">
+      <div id="modalNotes" class="modal-notes" style="display: none;"></div>
+    </div>
   </div>
 
   <script>
@@ -422,6 +448,7 @@
 
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImg');
+    const modalNotes = document.getElementById('modalNotes');
     const closeModal = document.getElementById('closeModal');
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -582,7 +609,7 @@
       liste.forEach(cmd => {
         const item = document.createElement('div');
         item.className = 'commande-item-compact';
-        item.onclick = () => ouvrirModal(cmd.photo);
+        item.onclick = () => ouvrirModal(cmd.photo, cmd.notes);
         item.innerHTML = `
           <div class="commande-main-btn">
             <span>📷</span>
@@ -597,9 +624,15 @@
       });
     }
 
-    window.ouvrirModal = function(src) {
+    window.ouvrirModal = function(src, notes) {
       modal.style.display = "flex";
       modalImg.src = src;
+      if (notes && notes.trim() !== "") {
+        modalNotes.textContent = "💬 " + notes;
+        modalNotes.style.display = "block";
+      } else {
+        modalNotes.style.display = "none";
+      }
     };
 
     closeModal.addEventListener('click', () => modal.style.display = "none");

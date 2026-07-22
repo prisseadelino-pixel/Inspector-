@@ -332,6 +332,12 @@
       <button class="btn-nav-home" id="btnRetourAccueil">🏠 Accueil</button>
     </header>
 
+    <!-- SECTION RECHERCHE (AU-DESSUS) -->
+    <section class="card" style="padding: 1rem;">
+      <input type="text" id="recherche" placeholder="🔍 Rechercher par numéro...">
+    </section>
+
+    <!-- NOUVELLE PREPARATION -->
     <section class="card">
       <h2 id="formTitle" style="font-size: 1.1rem; margin-bottom:1rem; color:var(--primary);">Nouvelle Préparation</h2>
       <div class="form-group">
@@ -368,13 +374,11 @@
       </div>
     </section>
 
+    <!-- HISTORIQUE DES PREUVES -->
     <section class="card">
       <div class="section-header">
         <h2>Historique des Preuves</h2>
         <button class="btn-danger" id="btnViderHistorique">🗑️ Vider l'historique</button>
-      </div>
-      <div style="margin: 1rem 0;">
-        <input type="text" id="recherche" placeholder="🔍 Rechercher par numéro...">
       </div>
       <div class="grid-gallery" id="galerieCommandes"></div>
     </section>

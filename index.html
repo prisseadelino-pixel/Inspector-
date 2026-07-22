@@ -361,7 +361,7 @@
       <h2 id="formTitle" style="font-size: 1.1rem; margin-bottom:1rem; color:var(--primary);">Nouvelle Préparation</h2>
       <div class="form-group">
         <label for="numeroCommande">Numéro de Commande</label>
-        <input type="text" id="numeroCommande" placeholder="ex: CMD-0001">
+        <input type="text" id="numeroCommande" placeholder="ex: 100311">
       </div>
 
       <div class="form-group">
@@ -458,7 +458,7 @@
 
     function genererProchainNumero() {
       if (commandes.length === 0) {
-        inputNumero.value = "CMD-0001";
+        inputNumero.value = "100001";
         return;
       }
       const numeros = commandes.map(c => {
@@ -466,7 +466,7 @@
         return match ? parseInt(match[0], 10) : 0;
       });
       const maxNumero = Math.max(...numeros, 0);
-      inputNumero.value = "CMD-" + String(maxNumero + 1).padStart(4, '0');
+      inputNumero.value = String(maxNumero + 1);
     }
 
     function compresserImage(dataUrl, callback) {

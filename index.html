@@ -451,9 +451,12 @@
       appScreen.style.display = 'block';
     });
 
+    // Clic sur "Accueil" : réinitialise l'application et remonte en haut
     btnRetourAccueil.addEventListener('click', () => {
-      appScreen.style.display = 'none';
-      homeScreen.style.display = 'flex';
+      reinitialiserFormulaire();
+      inputRecherche.value = "";
+      afficherGalerie();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
     let commandes = JSON.parse(localStorage.getItem('commandes_prepa')) || [];

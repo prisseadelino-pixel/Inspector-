@@ -1,651 +1,95 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chipeur arrête de Shipper</title>
-  <style>
-    :root {
-      --primary: #ea580c;
-      --primary-hover: #c2410c;
-      --secondary: #1e293b;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text: #0f172a;
-      --border: #e2e8f0;
-      --radius: 16px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    /* --- ACCUEIL --- */
-    #home-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 2rem 1rem;
-      text-align: center;
-      background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
-    }
-
-    .logo-container {
-      width: 180px;
-      height: 180px;
-      margin-bottom: 1.5rem;
-      background: white;
-      border-radius: 50%;
-      padding: 10px;
-      box-shadow: 0 10px 25px -5px rgba(234, 88, 12, 0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .logo-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .app-title {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--primary);
-      margin-bottom: 0.5rem;
-      line-height: 1.2;
-    }
-
-    .app-subtitle {
-      font-size: 1.1rem;
-      color: #64748b;
-      max-width: 400px;
-      margin-bottom: 2rem;
-    }
-
-    .btn-start {
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      padding: 1rem 2rem;
-      border-radius: 30px;
-      font-size: 1.2rem;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
-      transition: all 0.2s ease;
-    }
-
-    /* --- APPLICATION --- */
-    #app-screen {
-      display: none;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 1rem;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 2px solid var(--border);
-    }
-
-    .header-brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .header-brand img {
-      width: 45px;
-      height: 45px;
-      object-fit: contain;
-    }
-
-    .header-brand h1 {
-      font-size: 1.25rem;
-      color: var(--primary);
-    }
-
-    .btn-nav-home {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: #64748b;
-      padding: 0.5rem 0.75rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 1.25rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-      border: 1px solid var(--border);
-      margin-bottom: 1.5rem;
-    }
-
-    .form-group {
-      margin-bottom: 1rem;
-    }
-
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-
-    .camera-zone {
-      border: 2px dashed var(--border);
-      border-radius: 8px;
-      padding: 1rem;
-      text-align: center;
-      background: #f1f5f9;
-      cursor: pointer;
-    }
-
-    .camera-zone video, .camera-zone img {
-      width: 100%;
-      max-height: 250px;
-      object-fit: cover;
-      border-radius: 6px;
-      display: none;
-    }
-
-    .camera-controls {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-
-    button.btn-main {
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      padding: 0.75rem 1.25rem;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      font-size: 1rem;
-    }
-
-    button.btn-secondary {
-      background-color: #64748b;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.25rem;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    button.btn-danger {
-      background-color: #ef4444;
-      color: white;
-      border: none;
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .grid-gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 1rem;
-    }
-
-    .commande-item {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .commande-item img {
-      width: 100%;
-      height: 130px;
-      object-fit: cover;
-      cursor: zoom-in;
-    }
-
-    .commande-info {
-      padding: 0.75rem;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .commande-num {
-      font-weight: bold;
-      color: var(--primary);
-      font-size: 1rem;
-    }
-
-    .commande-date {
-      font-size: 0.7rem;
-      color: #64748b;
-      margin-bottom: 0.5rem;
-    }
-
-    .btn-edit {
-      margin-top: auto;
-      background: #f1f5f9;
-      border: 1px solid var(--border);
-      color: var(--secondary);
-      padding: 0.4rem;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-align: center;
-    }
-
-    /* --- MODAL ZOOM IMAGE --- */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.85);
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-
-    .modal img {
-      max-width: 95%;
-      max-height: 85vh;
-      border-radius: 8px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 20px;
-      right: 25px;
-      color: white;
-      font-size: 2rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chipeur, arrête de Shipper !</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        h1 {
+            color: #38bdf8;
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .upload-container {
+            background-color: #1e293b;
+            border: 2px dashed #334155;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn:active {
+            background-color: #0ea5e9;
+        }
+        #fileInput {
+            display: none;
+        }
+        #preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- ACCUEIL -->
-  <div id="home-screen">
-    <div class="logo-container">
-      <img src="https://i49.servimg.com/u/f49/11/31/89/70/picsar10.png" alt="Chipeur">
-    </div>
-    <h1 class="app-title">Chipeur, arrête de Shipper !</h1>
-    <p class="app-subtitle">Prenez en photo vos préparations de commandes et gardez une preuve visuelle incontestable.</p>
-    <button class="btn-start" id="btnCommencer">🚀 Lancer les préparations</button>
-  </div>
+    <h1>Chipeur, arrête de Shipper !</h1>
 
-  <!-- APPLICATION -->
-  <div id="app-screen">
-    <header>
-      <div class="header-brand">
-        <img src="https://i49.servimg.com/u/f49/11/31/89/70/picsar10.png" alt="Logo">
-        <h1>Chipeur, arrête de Shipper !</h1>
-      </div>
-      <button class="btn-nav-home" id="btnRetourAccueil">🏠 Accueil</button>
-    </header>
-
-    <section class="card">
-      <h2 id="formTitle" style="font-size: 1.1rem; margin-bottom:1rem; color:var(--primary);">Nouvelle Préparation</h2>
-      <div class="form-group">
-        <label for="numeroCommande">Numéro de Commande</label>
-        <input type="text" id="numeroCommande" placeholder="ex: CMD-0001">
-      </div>
-
-      <div class="form-group">
-        <label>Photo du colis / préparation</label>
-        <div class="camera-zone" id="cameraZone">
-          <span id="cameraPlaceholder">📷 Appuyer pour prendre / charger une photo</span>
-          <video id="webcam" autoplay playsinline></video>
-          <img id="photoPreview" alt="Aperçu photo">
-        </div>
-        <input type="file" id="fileInput" accept="image/*" capture="environment" style="display: none;">
+    <div class="upload-container">
+        <p>Sélectionnez une option :</p>
         
-        <div class="camera-controls" style="margin-top:0.75rem;">
-          <button type="button" class="btn-secondary" id="btnActiverWebcam">Activer Caméra Directe</button>
-          <button type="button" class="btn-secondary" id="btnCapturer" style="display:none;">🔴 Prendre la Photo</button>
-        </div>
-      </div>
+        <!-- Bouton pour choisir depuis la galerie ou les fichiers -->
+        <button class="btn" onclick="document.getElementById('fileInput').click()">📁 Choisir depuis la galerie</button>
+        <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)">
 
-      <div class="form-group">
-        <label for="notes">Remarques (optionnel)</label>
-        <textarea id="notes" rows="2" placeholder="Ex: Produit fragile, carton réutilisé..."></textarea>
-      </div>
+        <!-- Bouton pour prendre une photo directement -->
+        <button class="btn" onclick="document.getElementById('cameraInput').click()" style="background-color: #10b981; color: white;">📸 Prendre une photo</button>
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="previewImage(event)">
 
-      <div style="display:flex; gap:0.5rem;">
-        <button class="btn-main" id="btnEnregistrer">Enregistrer la préparation</button>
-        <button class="btn-secondary" id="btnAnnulerEdit" style="display:none; width:auto;">Annuler</button>
-      </div>
-    </section>
+        <br>
+        <img id="preview" alt="Aperçu de l'image">
+    </div>
 
-    <section class="card">
-      <div class="section-header">
-        <h2>Historique des Preuves</h2>
-        <button class="btn-danger" id="btnViderHistorique">🗑️ Vider l'historique</button>
-      </div>
-      <div style="margin: 1rem 0;">
-        <input type="text" id="recherche" placeholder="🔍 Rechercher par numéro...">
-      </div>
-      <div class="grid-gallery" id="galerieCommandes"></div>
-    </section>
-  </div>
-
-  <!-- MODAL ZOOM PHOTO -->
-  <div id="imageModal" class="modal">
-    <span class="modal-close" id="closeModal">&times;</span>
-    <img id="modalImg" src="" alt="Zoom photo">
-  </div>
-
-  <script>
-    const homeScreen = document.getElementById('home-screen');
-    const appScreen = document.getElementById('app-screen');
-    const btnCommencer = document.getElementById('btnCommencer');
-    const btnRetourAccueil = document.getElementById('btnRetourAccueil');
-
-    btnCommencer.addEventListener('click', () => {
-      homeScreen.style.display = 'none';
-      appScreen.style.display = 'block';
-    });
-
-    btnRetourAccueil.addEventListener('click', () => {
-      appScreen.style.display = 'none';
-      homeScreen.style.display = 'flex';
-    });
-
-    let commandes = JSON.parse(localStorage.getItem('commandes_prepa')) || [];
-    let imageCaptureeData = "";
-    let streamVideo = null;
-    let modeEditionId = null; // Stocke l'ID si on est en train de modifier une commande
-
-    const inputNumero = document.getElementById('numeroCommande');
-    const inputNotes = document.getElementById('notes');
-    const cameraZone = document.getElementById('cameraZone');
-    const fileInput = document.getElementById('fileInput');
-    const webcam = document.getElementById('webcam');
-    const photoPreview = document.getElementById('photoPreview');
-    const cameraPlaceholder = document.getElementById('cameraPlaceholder');
-    const btnActiverWebcam = document.getElementById('btnActiverWebcam');
-    const btnCapturer = document.getElementById('btnCapturer');
-    const btnEnregistrer = document.getElementById('btnEnregistrer');
-    const btnAnnulerEdit = document.getElementById('btnAnnulerEdit');
-    const formTitle = document.getElementById('formTitle');
-    const galerieCommandes = document.getElementById('galerieCommandes');
-    const inputRecherche = document.getElementById('recherche');
-    const btnViderHistorique = document.getElementById('btnViderHistorique');
-
-    // Modal elements
-    const modal = document.getElementById('imageModal');
-    const modalImg = document.getElementById('modalImg');
-    const closeModal = document.getElementById('closeModal');
-
-    window.addEventListener('DOMContentLoaded', () => {
-      genererProchainNumero();
-      afficherGalerie();
-    });
-
-    function genererProchainNumero() {
-      if (commandes.length === 0) {
-        inputNumero.value = "CMD-0001";
-        return;
-      }
-      const numeros = commandes.map(c => {
-        const match = c.numero.match(/\d+/);
-        return match ? parseInt(match[0], 10) : 0;
-      });
-      const maxNumero = Math.max(...numeros, 0);
-      inputNumero.value = "CMD-" + String(maxNumero + 1).padStart(4, '0');
-    }
-
-    // COMPRESSION OPTIMISÉE (Max 600px, Qualité 50% = ~30 à 50 Ko par photo)
-    function compresserImage(dataUrl, callback) {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let width = img.width;
-        let height = img.height;
-        const maxDimension = 600;
-
-        if (width > height && width > maxDimension) {
-          height *= maxDimension / width;
-          width = maxDimension;
-        } else if (height > maxDimension) {
-          width *= maxDimension / height;
-          height = maxDimension;
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                const output = document.getElementById('preview');
+                output.src = reader.result;
+                output.style.display = 'block';
+            };
+            reader.readAsDataURL(event.target.files[0]);
         }
+    </script>
 
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-        callback(canvas.toDataURL('image/jpeg', 0.5));
-      };
-      img.src = dataUrl;
-    }
-
-    cameraZone.addEventListener('click', () => {
-      if (!streamVideo) fileInput.click();
-    });
-
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          compresserImage(event.target.result, (imageCompressée) => {
-            imageCaptureeData = imageCompressée;
-            photoPreview.src = imageCaptureeData;
-            photoPreview.style.display = 'block';
-            cameraPlaceholder.style.display = 'none';
-          });
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    btnActiverWebcam.addEventListener('click', async () => {
-      try {
-        streamVideo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        webcam.srcObject = streamVideo;
-        webcam.style.display = 'block';
-        cameraPlaceholder.style.display = 'none';
-        photoPreview.style.display = 'none';
-        btnCapturer.style.display = 'block';
-        btnActiverWebcam.style.display = 'none';
-      } catch (err) {
-        alert("Erreur caméra : " + err.message);
-      }
-    });
-
-    btnCapturer.addEventListener('click', () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = webcam.videoWidth;
-      canvas.height = webcam.videoHeight;
-      canvas.getContext('2d').drawImage(webcam, 0, 0);
-      
-      compresserImage(canvas.toDataURL('image/jpeg'), (imageCompressée) => {
-        imageCaptureeData = imageCompressée;
-        photoPreview.src = imageCaptureeData;
-        photoPreview.style.display = 'block';
-        webcam.style.display = 'none';
-        if (streamVideo) {
-          streamVideo.getTracks().forEach(track => track.stop());
-          streamVideo = null;
-        }
-        btnCapturer.style.display = 'none';
-        btnActiverWebcam.style.display = 'block';
-      });
-    });
-
-    btnEnregistrer.addEventListener('click', () => {
-      const numero = inputNumero.value.trim();
-      const notes = inputNotes.value.trim();
-
-      if (!numero || !imageCaptureeData) {
-        alert("Veuillez renseigner un numéro et prendre une photo.");
-        return;
-      }
-
-      if (modeEditionId !== null) {
-        // MODE MODIFICATION
-        const index = commandes.findIndex(c => c.id === modeEditionId);
-        if (index !== -1) {
-          commandes[index].numero = numero;
-          commandes[index].notes = notes;
-          commandes[index].photo = imageCaptureeData;
-        }
-      } else {
-        // MODE CRÉATION
-        commandes.unshift({
-          id: Date.now(),
-          numero: numero,
-          photo: imageCaptureeData,
-          notes: notes,
-          date: new Date().toLocaleString('fr-FR')
-        });
-      }
-
-      try {
-        localStorage.setItem('commandes_prepa', JSON.stringify(commandes));
-      } catch (e) {
-        alert("Mémoire saturée ! Videz l'historique pour ajouter de nouvelles photos.");
-        return;
-      }
-
-      reinitialiserFormulaire();
-      afficherGalerie();
-    });
-
-    function reinitialiserFormulaire() {
-      modeEditionId = null;
-      imageCaptureeData = "";
-      photoPreview.style.display = 'none';
-      cameraPlaceholder.style.display = 'block';
-      inputNotes.value = "";
-      fileInput.value = "";
-      btnEnregistrer.textContent = "Enregistrer la préparation";
-      btnAnnulerEdit.style.display = "none";
-      formTitle.textContent = "Nouvelle Préparation";
-      genererProchainNumero();
-    }
-
-    btnAnnulerEdit.addEventListener('click', reinitialiserFormulaire);
-
-    // EDITER UNE COMMANDE EXISTANTE
-    window.editerCommande = function(id) {
-      const item = commandes.find(c => c.id === id);
-      if (!item) return;
-
-      modeEditionId = id;
-      inputNumero.value = item.numero;
-      inputNotes.value = item.notes || "";
-      imageCaptureeData = item.photo;
-      
-      photoPreview.src = item.photo;
-      photoPreview.style.display = 'block';
-      cameraPlaceholder.style.display = 'none';
-
-      btnEnregistrer.textContent = "💾 Sauvegarder les modifications";
-      btnAnnulerEdit.style.display = "inline-block";
-      formTitle.textContent = "✏️ Modifier la commande " + item.numero;
-      
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    btnViderHistorique.addEventListener('click', () => {
-      if (confirm("Voulez-vous vraiment effacer tout l'historique des photos ?")) {
-        commandes = [];
-        localStorage.removeItem('commandes_prepa');
-        reinitialiserFormulaire();
-        afficherGalerie();
-      }
-    });
-
-    function afficherGalerie(filtre = "") {
-      galerieCommandes.innerHTML = "";
-      const liste = commandes.filter(c => c.numero.toLowerCase().includes(filtre.toLowerCase()));
-
-      if (liste.length === 0) {
-        galerieCommandes.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#64748b;">Aucune commande enregistrée.</p>`;
-        return;
-      }
-
-      liste.forEach(cmd => {
-        const item = document.createElement('div');
-        item.className = 'commande-item';
-        item.innerHTML = `
-          <img src="${cmd.photo}" alt="${cmd.numero}" onclick="ouvrirModal('${cmd.photo}')">
-          <div class="commande-info">
-            <div class="commande-num">${cmd.numero}</div>
-            <div class="commande-date">${cmd.date}</div>
-            ${cmd.notes ? `<p style="font-size:0.8rem; margin-bottom:0.5rem;">${cmd.notes}</p>` : ''}
-            <button class="btn-edit" onclick="editerCommande(${cmd.id})">✏️ Modifier</button>
-          </div>
-        `;
-        galerieCommandes.appendChild(item);
-      });
-    }
-
-    // ZOOM PHOTO (MODAL)
-    window.ouvrirModal = function(src) {
-      modal.style.display = "flex";
-      modalImg.src = src;
-    };
-
-    closeModal.addEventListener('click', () => modal.style.display = "none");
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.style.display = "none";
-    });
-
-    inputRecherche.addEventListener('input', (e) => afficherGalerie(e.target.value));
-  </script>
 </body>
 </html>
-

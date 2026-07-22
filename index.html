@@ -153,6 +153,33 @@
       margin-bottom: 1.5rem;
     }
 
+    /* BARRE DE RECHERCHE ET BOUTON */
+    .search-box {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .search-box input {
+      flex: 1;
+    }
+
+    .btn-search {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s ease;
+    }
+
+    .btn-search:hover {
+      background-color: var(--primary-hover);
+    }
+
     .form-group {
       margin-bottom: 1rem;
     }
@@ -382,12 +409,15 @@
       <button class="btn-nav-home" id="btnRetourAccueil">🏠 Accueil</button>
     </header>
 
-    <!-- SECTION RECHERCHE -->
+    <!-- SECTION RECHERCHE AVEC BOUTON -->
     <section class="card" style="padding: 1rem;">
-      <input type="text" id="recherche" placeholder="🔍 Rechercher par numéro..." autocomplete="off">
+      <div class="search-box">
+        <input type="text" id="recherche" placeholder="🔍 Rechercher par numéro..." autocomplete="off">
+        <button type="button" class="btn-search" id="btnLancerRecherche">Rechercher</button>
+      </div>
     </section>
 
-    <!-- NOUVELLE PREPARATION (Masquée automatiquement lors de la recherche) -->
+    <!-- NOUVELLE PREPARATION -->
     <section class="card" id="sectionPreparation">
       <h2 id="formTitle" style="font-size: 1.1rem; margin-bottom:1rem; color:var(--primary);">Nouvelle Préparation</h2>
       <div class="form-group">
@@ -480,6 +510,7 @@
     const formTitle = document.getElementById('formTitle');
     const galerieCommandes = document.getElementById('galerieCommandes');
     const inputRecherche = document.getElementById('recherche');
+    const btnLancerRecherche = document.getElementById('btnLancerRecherche');
     const btnViderHistorique = document.getElementById('btnViderHistorique');
 
     const modal = document.getElementById('imageModal');
@@ -595,7 +626,6 @@
       const item = commandes.find(c => c.id === id);
       if (!item) return;
 
-      // S'il y avait une recherche, on l'efface pour faire réapparaître le formulaire
       inputRecherche.value = "";
       sectionPreparation.style.display = 'block';
 
@@ -682,15 +712,28 @@
       if (e.target === modal) modal.style.display = "none";
     });
 
-    // MASQUER / AFFICHER LA SECTION PREPARATION LORS DE LA RECHERCHE
-    inputRecherche.addEventListener('input', (e) => {
-      const valeur = e.target.value.trim();
+    // FONCTION DE RECHERCHE ET MASQUAGE DE LA ZONE PREPARATION
+    function executerRecherche() {
+      const valeur = inputRecherche.value.trim();
       if (valeur !== "") {
         sectionPreparation.style.display = 'none';
       } else {
         sectionPreparation.style.display = 'block';
       }
       afficherGalerie(valeur);
+    }
+
+    // Déclenchement sur clic du bouton
+    btnLancerRecherche.addEventListener('click', executerRecherche);
+
+    // Déclenchement automatique lors de la saisie au clavier
+    inputRecherche.addEventListener('input', executerRecherche);
+
+    // Touche Entrée dans le champ de recherche
+    inputRecherche.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        executerRecherche();
+      }
     });
   </script>
 </body>

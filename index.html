@@ -216,58 +216,60 @@
       margin-bottom: 1rem;
     }
 
-    .grid-gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 1rem;
+    /* --- LISTE COMPACTE D'HISTORIQUE --- */
+    .liste-commandes {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
 
-    .commande-item {
-      background: var(--card-bg);
+    .commande-item-compact {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
     }
 
-    .commande-item img {
-      width: 100%;
-      height: 130px;
-      object-fit: cover;
-      cursor: zoom-in;
-    }
-
-    .commande-info {
-      padding: 0.75rem;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .commande-num {
-      font-weight: bold;
-      color: var(--primary);
-      font-size: 1rem;
-    }
-
-    .commande-date {
-      font-size: 0.7rem;
-      color: #64748b;
-      margin-bottom: 0.5rem;
-    }
-
-    .btn-edit {
-      margin-top: auto;
+    .commande-item-compact:hover {
       background: #f1f5f9;
+    }
+
+    .commande-main-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-grow: 1;
+    }
+
+    .commande-num-badge {
+      font-weight: bold;
+      font-size: 1.05rem;
+      color: var(--primary);
+    }
+
+    .commande-date-compact {
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+
+    .btn-edit-small {
+      background: #ffffff;
       border: 1px solid var(--border);
       color: var(--secondary);
-      padding: 0.4rem;
+      padding: 0.35rem 0.6rem;
       border-radius: 6px;
       font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
-      text-align: center;
+    }
+
+    .btn-edit-small:hover {
+      background: var(--border);
     }
 
     /* --- MODAL ZOOM IMAGE --- */
@@ -370,7 +372,7 @@
         <h2>Historique des Preuves</h2>
         <button class="btn-danger" id="btnViderHistorique">🗑️ Vider l'historique</button>
       </div>
-      <div class="grid-gallery" id="galerieCommandes"></div>
+      <div class="liste-commandes" id="galerieCommandes"></div>
     </section>
   </div>
 
@@ -538,7 +540,8 @@
 
     btnAnnulerEdit.addEventListener('click', reinitialiserFormulaire);
 
-    window.editerCommande = function(id) {
+    window.editerCommande = function(id, event) {
+      if (event) event.stopPropagation(); // Évite d'ouvrir la modal quand on clique sur Éditer
       const item = commandes.find(c => c.id === id);
       if (!item) return;
 
@@ -571,21 +574,23 @@
       const liste = commandes.filter(c => c.numero.toLowerCase().includes(filtre.toLowerCase()));
 
       if (liste.length === 0) {
-        galerieCommandes.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#64748b;">Aucune commande enregistrée.</p>`;
+        galerieCommandes.innerHTML = `<p style="text-align:center; color:#64748b; padding:1rem;">Aucune commande enregistrée.</p>`;
         return;
       }
 
       liste.forEach(cmd => {
         const item = document.createElement('div');
-        item.className = 'commande-item';
+        item.className = 'commande-item-compact';
+        item.onclick = () => ouvrirModal(cmd.photo);
         item.innerHTML = `
-          <img src="${cmd.photo}" alt="${cmd.numero}" onclick="ouvrirModal('${cmd.photo}')">
-          <div class="commande-info">
-            <div class="commande-num">${cmd.numero}</div>
-            <div class="commande-date">${cmd.date}</div>
-            ${cmd.notes ? `<p style="font-size:0.8rem; margin-bottom:0.5rem;">${cmd.notes}</p>` : ''}
-            <button class="btn-edit" onclick="editerCommande(${cmd.id})">✏️ Modifier</button>
+          <div class="commande-main-btn">
+            <span>📷</span>
+            <div>
+              <div class="commande-num-badge">${cmd.numero}</div>
+              <div class="commande-date-compact">${cmd.date}</div>
+            </div>
           </div>
+          <button class="btn-edit-small" onclick="editerCommande(${cmd.id}, event)">✏️ Modifier</button>
         `;
         galerieCommandes.appendChild(item);
       });

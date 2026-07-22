@@ -451,7 +451,6 @@
       appScreen.style.display = 'block';
     });
 
-    // Clic sur "Accueil" : réinitialise l'application et remonte en haut
     btnRetourAccueil.addEventListener('click', () => {
       reinitialiserFormulaire();
       inputRecherche.value = "";
@@ -486,22 +485,8 @@
     const closeModal = document.getElementById('closeModal');
 
     window.addEventListener('DOMContentLoaded', () => {
-      genererProchainNumero();
       afficherGalerie();
     });
-
-    function genererProchainNumero() {
-      if (commandes.length === 0) {
-        inputNumero.value = "100001";
-        return;
-      }
-      const numeros = commandes.map(c => {
-        const match = c.numero.match(/\d+/);
-        return match ? parseInt(match[0], 10) : 0;
-      });
-      const maxNumero = Math.max(...numeros, 0);
-      inputNumero.value = String(maxNumero + 1);
-    }
 
     function compresserImage(dataUrl, callback) {
       const img = new Image();
@@ -589,6 +574,7 @@
 
     function reinitialiserFormulaire() {
       modeEditionId = null;
+      inputNumero.value = "";
       imageCaptureeData = "";
       photoPreview.style.display = 'none';
       inputNotes.value = "";
@@ -597,7 +583,6 @@
       btnEnregistrer.textContent = "Enregistrer la préparation";
       btnAnnulerEdit.style.display = "none";
       formTitle.textContent = "Nouvelle Préparation";
-      genererProchainNumero();
     }
 
     btnAnnulerEdit.addEventListener('click', reinitialiserFormulaire);

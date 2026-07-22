@@ -62,15 +62,16 @@
     }
 
     .app-title {
-      font-size: 2rem;
+      font-size: 1.6rem;
       font-weight: 800;
       color: var(--primary);
       margin-bottom: 0.5rem;
-      line-height: 1.2;
+      line-height: 1.25;
+      padding: 0 0.5rem;
     }
 
     .app-subtitle {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       color: #64748b;
       max-width: 400px;
       margin-bottom: 2rem;
@@ -312,9 +313,9 @@
     <div class="logo-container">
       <img src="https://i49.servimg.com/u/f49/11/31/89/70/picsar10.png" alt="Chipeur">
     </div>
-    <h1 class="app-title">Chipeur, arrête de Shipper !</h1>
-    <p class="app-subtitle">Prenez en photo vos préparations de commandes et gardez une preuve visuelle incontestable.</p>
-    <button class="btn-start" id="btnCommencer">🚀 Lancer les préparations</button>
+    <h1 class="app-title">Chipeur, arrête de Shipper&nbsp;!</h1>
+    <p class="app-subtitle">Prenez en photo vos preparations de commandes et gardez une preuve visuelle incontestable.</p>
+    <button class="btn-start" id="btnCommencer">🚀 Lancer les preparations</button>
   </div>
 
   <!-- APPLICATION -->
@@ -541,7 +542,7 @@
     btnAnnulerEdit.addEventListener('click', reinitialiserFormulaire);
 
     window.editerCommande = function(id, event) {
-      if (event) event.stopPropagation(); // Évite d'ouvrir la modal quand on clique sur Éditer
+      if (event) event.stopPropagation();
       const item = commandes.find(c => c.id === id);
       if (!item) return;
 

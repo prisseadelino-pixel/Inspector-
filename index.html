@@ -161,26 +161,19 @@
       font-size: 1rem;
     }
 
-    .camera-zone {
-      border: 2px dashed var(--border);
-      border-radius: 8px;
-      padding: 1rem;
-      text-align: center;
-      background: #f1f5f9;
-    }
-
-    .camera-zone img {
+    #photoPreview {
       width: 100%;
       max-height: 250px;
       object-fit: cover;
-      border-radius: 6px;
+      border-radius: 8px;
       display: none;
+      margin-bottom: 0.75rem;
+      border: 1px solid var(--border);
     }
 
     .camera-controls {
       display: flex;
       gap: 0.5rem;
-      margin-top: 0.75rem;
     }
 
     button.btn-main {
@@ -332,7 +325,7 @@
       <button class="btn-nav-home" id="btnRetourAccueil">🏠 Accueil</button>
     </header>
 
-    <!-- SECTION RECHERCHE (AU-DESSUS) -->
+    <!-- SECTION RECHERCHE -->
     <section class="card" style="padding: 1rem;">
       <input type="text" id="recherche" placeholder="🔍 Rechercher par numéro...">
     </section>
@@ -347,10 +340,7 @@
 
       <div class="form-group">
         <label>Photo du colis / préparation</label>
-        <div class="camera-zone" id="cameraZone">
-          <span id="cameraPlaceholder">📷 Choisissez une méthode ci-dessous</span>
-          <img id="photoPreview" alt="Aperçu photo">
-        </div>
+        <img id="photoPreview" alt="Aperçu photo">
         
         <!-- Input pour Galerie -->
         <input type="file" id="fileGallery" accept="image/*" style="display: none;">
@@ -412,7 +402,6 @@
 
     const inputNumero = document.getElementById('numeroCommande');
     const inputNotes = document.getElementById('notes');
-    const cameraPlaceholder = document.getElementById('cameraPlaceholder');
     const photoPreview = document.getElementById('photoPreview');
     
     const fileGallery = document.getElementById('fileGallery');
@@ -488,7 +477,6 @@
             imageCaptureeData = imageCompressée;
             photoPreview.src = imageCaptureeData;
             photoPreview.style.display = 'block';
-            cameraPlaceholder.style.display = 'none';
           });
         };
         reader.readAsDataURL(file);
@@ -539,7 +527,6 @@
       modeEditionId = null;
       imageCaptureeData = "";
       photoPreview.style.display = 'none';
-      cameraPlaceholder.style.display = 'block';
       inputNotes.value = "";
       fileGallery.value = "";
       fileCamera.value = "";
@@ -562,7 +549,6 @@
       
       photoPreview.src = item.photo;
       photoPreview.style.display = 'block';
-      cameraPlaceholder.style.display = 'none';
 
       btnEnregistrer.textContent = "💾 Sauvegarder les modifications";
       btnAnnulerEdit.style.display = "inline-block";

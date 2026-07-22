@@ -169,7 +169,7 @@
       background: #f1f5f9;
     }
 
-    .camera-zone video, .camera-zone img {
+    .camera-zone img {
       width: 100%;
       max-height: 250px;
       object-fit: cover;
@@ -343,7 +343,6 @@
         <label>Photo du colis / préparation</label>
         <div class="camera-zone" id="cameraZone">
           <span id="cameraPlaceholder">📷 Choisissez une méthode ci-dessous</span>
-          <video id="webcam" autoplay playsinline></video>
           <img id="photoPreview" alt="Aperçu photo">
         </div>
         
@@ -355,9 +354,7 @@
         <div class="camera-controls">
           <button type="button" class="btn-secondary" id="btnGalerie">📁 Galerie</button>
           <button type="button" class="btn-secondary" id="btnPhotoDirecte">📸 Photo</button>
-          <button type="button" class="btn-secondary" id="btnActiverWebcam">🎥 Caméra Directe</button>
         </div>
-        <button type="button" class="btn-secondary" id="btnCapturer" style="display:none; margin-top:0.5rem; background:#ef4444;">🔴 Prendre la Photo</button>
       </div>
 
       <div class="form-group">
@@ -407,22 +404,18 @@
 
     let commandes = JSON.parse(localStorage.getItem('commandes_prepa')) || [];
     let imageCaptureeData = "";
-    let streamVideo = null;
     let modeEditionId = null;
 
     const inputNumero = document.getElementById('numeroCommande');
     const inputNotes = document.getElementById('notes');
     const cameraPlaceholder = document.getElementById('cameraPlaceholder');
     const photoPreview = document.getElementById('photoPreview');
-    const webcam = document.getElementById('webcam');
     
     const fileGallery = document.getElementById('fileGallery');
     const fileCamera = document.getElementById('fileCamera');
     
     const btnGalerie = document.getElementById('btnGalerie');
     const btnPhotoDirecte = document.getElementById('btnPhotoDirecte');
-    const btnActiverWebcam = document.getElementById('btnActiverWebcam');
-    const btnCapturer = document.getElementById('btnCapturer');
     
     const btnEnregistrer = document.getElementById('btnEnregistrer');
     const btnAnnulerEdit = document.getElementById('btnAnnulerEdit');
@@ -491,7 +484,6 @@
             imageCaptureeData = imageCompressée;
             photoPreview.src = imageCaptureeData;
             photoPreview.style.display = 'block';
-            webcam.style.display = 'none';
             cameraPlaceholder.style.display = 'none';
           });
         };
@@ -501,39 +493,6 @@
 
     fileGallery.addEventListener('change', chargerFichier);
     fileCamera.addEventListener('change', chargerFichier);
-
-    // Webcam directe (pour PC / Navigateurs compatibles)
-    btnActiverWebcam.addEventListener('click', async () => {
-      try {
-        streamVideo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        webcam.srcObject = streamVideo;
-        webcam.style.display = 'block';
-        cameraPlaceholder.style.display = 'none';
-        photoPreview.style.display = 'none';
-        btnCapturer.style.display = 'block';
-      } catch (err) {
-        alert("Erreur caméra : " + err.message);
-      }
-    });
-
-    btnCapturer.addEventListener('click', () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = webcam.videoWidth;
-      canvas.height = webcam.videoHeight;
-      canvas.getContext('2d').drawImage(webcam, 0, 0);
-      
-      compresserImage(canvas.toDataURL('image/jpeg'), (imageCompressée) => {
-        imageCaptureeData = imageCompressée;
-        photoPreview.src = imageCaptureeData;
-        photoPreview.style.display = 'block';
-        webcam.style.display = 'none';
-        if (streamVideo) {
-          streamVideo.getTracks().forEach(track => track.stop());
-          streamVideo = null;
-        }
-        btnCapturer.style.display = 'none';
-      });
-    });
 
     btnEnregistrer.addEventListener('click', () => {
       const numero = inputNumero.value.trim();
@@ -576,7 +535,6 @@
       modeEditionId = null;
       imageCaptureeData = "";
       photoPreview.style.display = 'none';
-      webcam.style.display = 'none';
       cameraPlaceholder.style.display = 'block';
       inputNotes.value = "";
       fileGallery.value = "";

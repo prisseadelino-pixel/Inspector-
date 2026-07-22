@@ -387,8 +387,8 @@
       <input type="text" id="recherche" placeholder="🔍 Rechercher par numéro..." autocomplete="off">
     </section>
 
-    <!-- NOUVELLE PREPARATION -->
-    <section class="card">
+    <!-- NOUVELLE PREPARATION (Masquée automatiquement lors de la recherche) -->
+    <section class="card" id="sectionPreparation">
       <h2 id="formTitle" style="font-size: 1.1rem; margin-bottom:1rem; color:var(--primary);">Nouvelle Préparation</h2>
       <div class="form-group">
         <label for="numeroCommande">Numéro de Commande</label>
@@ -445,6 +445,7 @@
     const appScreen = document.getElementById('app-screen');
     const btnCommencer = document.getElementById('btnCommencer');
     const btnRetourAccueil = document.getElementById('btnRetourAccueil');
+    const sectionPreparation = document.getElementById('sectionPreparation');
 
     btnCommencer.addEventListener('click', () => {
       homeScreen.style.display = 'none';
@@ -455,6 +456,7 @@
     btnRetourAccueil.addEventListener('click', () => {
       reinitialiserFormulaire();
       inputRecherche.value = "";
+      sectionPreparation.style.display = 'block';
       afficherGalerie();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
@@ -593,6 +595,10 @@
       const item = commandes.find(c => c.id === id);
       if (!item) return;
 
+      // S'il y avait une recherche, on l'efface pour faire réapparaître le formulaire
+      inputRecherche.value = "";
+      sectionPreparation.style.display = 'block';
+
       modeEditionId = id;
       inputNumero.value = item.numero;
       inputNotes.value = item.notes || "";
@@ -635,7 +641,7 @@
       const liste = commandes.filter(c => c.numero.toLowerCase().includes(filtre.toLowerCase()));
 
       if (liste.length === 0) {
-        galerieCommandes.innerHTML = `<p style="text-align:center; color:#64748b; padding:1rem;">Aucune commande enregistrée.</p>`;
+        galerieCommandes.innerHTML = `<p style="text-align:center; color:#64748b; padding:1rem;">Aucune commande trouvée.</p>`;
         return;
       }
 
@@ -676,7 +682,16 @@
       if (e.target === modal) modal.style.display = "none";
     });
 
-    inputRecherche.addEventListener('input', (e) => afficherGalerie(e.target.value));
+    // MASQUER / AFFICHER LA SECTION PREPARATION LORS DE LA RECHERCHE
+    inputRecherche.addEventListener('input', (e) => {
+      const valeur = e.target.value.trim();
+      if (valeur !== "") {
+        sectionPreparation.style.display = 'none';
+      } else {
+        sectionPreparation.style.display = 'block';
+      }
+      afficherGalerie(valeur);
+    });
   </script>
 </body>
 </html>

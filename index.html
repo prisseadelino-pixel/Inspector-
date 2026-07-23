@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chipeur arrête de Shipper</title>
+  <title>AD Contrôle</title>
 
-  <!-- Liens pour l'icône de l'application et le manifest -->
-  <link rel="icon" type="image/png" href="logo.png">
+  <!-- ICÔNE AD CONTRÔLE DE L'APPLICATION -->
+  <link rel="icon" type="image/png" href="https://i49.servimg.com/u/f49/11/31/89/70/17848310.png">
   <link rel="manifest" href="manifest.json">
 
   <style>
@@ -17,7 +17,7 @@
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text: #0f172a;
-      --border: #e2e8f0;
+      --border: #cbd5e1;
       --radius: 16px;
     }
 
@@ -41,45 +41,37 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      padding: 2rem 1rem;
+      padding: 1rem;
       text-align: center;
       background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
     }
 
     .logo-container {
-      width: 180px;
-      height: 180px;
-      margin-bottom: 1.5rem;
-      background: white;
-      border-radius: 50%;
-      padding: 10px;
-      box-shadow: 0 10px 25px -5px rgba(234, 88, 12, 0.2);
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      margin-bottom: 2rem;
     }
 
-    .logo-container img {
-      width: 100%;
-      height: 100%;
+    /* LOGO D'ACCUEIL GRAND */
+    .home-logo-img {
+      width: 85vw !important;
+      max-width: 600px !important;
+      height: auto !important;
+      max-height: 350px !important;
       object-fit: contain;
-    }
-
-    .app-title {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--primary);
-      margin-bottom: 0.5rem;
-      line-height: 1.25;
-      padding: 0 0.5rem;
+      filter: contrast(135%) brightness(112%);
+      mix-blend-mode: multiply;
+      display: block;
     }
 
     .app-subtitle {
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       color: #64748b;
-      max-width: 400px;
+      max-width: 480px;
       margin-bottom: 2rem;
+      line-height: 1.4;
     }
 
     .btn-start {
@@ -120,17 +112,14 @@
       flex: 1;
     }
 
+    /* LOGO DE L'EN-TÊTE FIXÉ À 65PX */
     .header-brand img {
-      width: 40px;
-      height: 40px;
+      max-height: 65px !important;
+      width: auto !important;
       object-fit: contain;
       flex-shrink: 0;
-    }
-
-    .header-brand h1 {
-      font-size: 1.05rem;
-      color: var(--primary);
-      line-height: 1.2;
+      filter: contrast(135%) brightness(112%);
+      mix-blend-mode: multiply;
     }
 
     .btn-nav-home {
@@ -237,21 +226,74 @@
       width: 100%;
     }
 
+    /* FILTRE PAR DATE ET BOUTONS PDF / VIDER */
+    .export-filter-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      background: #f1f5f9;
+      padding: 0.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .export-filter-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--secondary);
+    }
+
+    .export-actions-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .input-date-custom {
+      flex: 1;
+      min-width: 140px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text);
+      outline: none;
+      background: white;
+    }
+
+    button.btn-pdf {
+      background-color: #0284c7;
+      color: white;
+      border: none;
+      padding: 0.6rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      white-space: nowrap;
+    }
+
+    button.btn-pdf:hover {
+      background-color: #0369a1;
+    }
+
     button.btn-danger {
       background-color: #ef4444;
       color: white;
       border: none;
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
+      padding: 0.6rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
     }
 
     /* --- LISTE COMPACTE D'HISTORIQUE --- */
@@ -259,6 +301,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
+      margin-top: 1rem;
     }
 
     .commande-item-compact {
@@ -385,6 +428,71 @@
       cursor: pointer;
       z-index: 1001;
     }
+
+    /* --- STYLES D'IMPRESSION (GENERATION PDF) --- */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 20px;
+      }
+      .print-title {
+        font-size: 22px;
+        color: #ea580c;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      .print-subtitle {
+        font-size: 12px;
+        color: #64748b;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #ea580c;
+        padding-bottom: 10px;
+      }
+      .print-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+      .print-card {
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px;
+        page-break-inside: avoid;
+        background: #ffffff;
+      }
+      .print-card h3 {
+        font-size: 16px;
+        color: #0f172a;
+        margin-bottom: 4px;
+      }
+      .print-card .date {
+        font-size: 11px;
+        color: #64748b;
+        margin-bottom: 8px;
+      }
+      .print-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+      }
+      .print-card .notes {
+        font-size: 12px;
+        color: #334155;
+        margin-top: 6px;
+        font-style: italic;
+      }
+    }
   </style>
 </head>
 <body>
@@ -392,10 +500,11 @@
   <!-- ACCUEIL -->
   <div id="home-screen">
     <div class="logo-container">
-      <img src="logo.png" alt="Chipeur Logo">
+      <a href="https://servimg.com/view/11318970/307" target="_blank">
+        <img class="home-logo-img" src="https://i49.servimg.com/u/f49/11/31/89/70/17848310.png" style="border:0;" alt="AD Contrôle Logo" />
+      </a>
     </div>
-    <h1 class="app-title">Chipeur, arrête de Shipper&nbsp;!</h1>
-    <p class="app-subtitle">Prenez en photo vos préparations de commandes et gardez une preuve visuelle incontestable.</p>
+    <p class="app-subtitle">Prenez en photo vos preparations de commandes et gardez une preuve visuelle incontestable.</p>
     <button class="btn-start" id="btnCommencer">🚀 Lancer les préparations</button>
   </div>
 
@@ -403,8 +512,9 @@
   <div id="app-screen">
     <header>
       <div class="header-brand">
-        <img src="logo.png" alt="Logo">
-        <h1>Chipeur, arrête de Shipper&nbsp;!</h1>
+        <a href="https://servimg.com/view/11318970/307" target="_blank">
+          <img src="https://i49.servimg.com/u/f49/11/31/89/70/17848310.png" style="border:0;" alt="AD Contrôle Logo" />
+        </a>
       </div>
       <button class="btn-nav-home" id="btnRetourAccueil">🏠 Accueil</button>
     </header>
@@ -455,11 +565,23 @@
     <section class="card">
       <div class="section-header">
         <h2>Historique des Preuves</h2>
-        <button class="btn-danger" id="btnViderHistorique">🗑️ Vider l'historique</button>
       </div>
+
+      <div class="export-filter-container">
+        <span class="export-filter-label">📅 Filtrer par date pour l'export (Optionnel) :</span>
+        <div class="export-actions-row">
+          <input type="date" id="dateFiltreExport" class="input-date-custom">
+          <button class="btn-pdf" id="btnExportPDF">📄 Exporter PDF</button>
+          <button class="btn-danger" id="btnViderHistorique">🗑️ Vider</button>
+        </div>
+      </div>
+
       <div class="liste-commandes" id="galerieCommandes"></div>
     </section>
   </div>
+
+  <!-- ZONE INVISIBLE DÉDIÉE À L'IMPRESSION PDF -->
+  <div id="print-area"></div>
 
   <!-- MODAL ZOOM PHOTO & COMMENTAIRE -->
   <div id="imageModal" class="modal">
@@ -512,6 +634,8 @@
     const inputRecherche = document.getElementById('recherche');
     const btnLancerRecherche = document.getElementById('btnLancerRecherche');
     const btnViderHistorique = document.getElementById('btnViderHistorique');
+    const btnExportPDF = document.getElementById('btnExportPDF');
+    const dateFiltreExport = document.getElementById('dateFiltreExport');
 
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImg');
@@ -710,6 +834,73 @@
     closeModal.addEventListener('click', () => modal.style.display = "none");
     modal.addEventListener('click', (e) => {
       if (e.target === modal) modal.style.display = "none";
+    });
+
+    // FONCTION DE RECHERCHE
+    function executerRecherche() {
+      const valeur = inputRecherche.value.trim();
+      if (valeur !== "") {
+        sectionPreparation.style.display = 'none';
+      } else {
+        sectionPreparation.style.display = 'block';
+      }
+      afficherGalerie(valeur);
+    }
+
+    btnLancerRecherche.addEventListener('click', executerRecherche);
+    inputRecherche.addEventListener('input', executerRecherche);
+    inputRecherche.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') executerRecherche();
+    });
+
+    // --- FONCTION EXPORT EN PDF AVEC FILTRE DE DATE ---
+    btnExportPDF.addEventListener('click', () => {
+      const dateSelect = dateFiltreExport.value;
+      let listeAExporter = commandes;
+      let titreExport = "Historique Complet des Preuves";
+
+      if (dateSelect) {
+        const parts = dateSelect.split('-');
+        const dateFormatee = `${parts[2]}/${parts[1]}/${parts[0]}`;
+        
+        listeAExporter = commandes.filter(cmd => cmd.date.startsWith(dateFormatee));
+        titreExport = `Historique des Preuves - Date : ${dateFormatee}`;
+
+        if (listeAExporter.length === 0) {
+          alert(`Aucune commande trouvée pour la date du ${dateFormatee}.`);
+          return;
+        }
+      } else {
+        if (commandes.length === 0) {
+          alert("L'historique est vide, aucun document à exporter.");
+          return;
+        }
+      }
+
+      const printArea = document.getElementById('print-area');
+      const dateHeureExport = new Date().toLocaleString('fr-FR');
+
+      let html = `
+        <div class="print-title">${titreExport}</div>
+        <div class="print-subtitle">Document généré le ${dateHeureExport} - Total : ${listeAExporter.length} preuve(s)</div>
+        <div class="print-grid">
+      `;
+
+      listeAExporter.forEach(cmd => {
+        html += `
+          <div class="print-card">
+            <h3>Commande : ${cmd.numero}</h3>
+            <div class="date">Date : ${cmd.date}</div>
+            <img src="${cmd.photo}" alt="Preuve commande ${cmd.numero}">
+            ${cmd.notes ? `<div class="notes">💬 ${cmd.notes}</div>` : ''}
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      printArea.innerHTML = html;
+
+      window.print();
     });
   </script>
 </body>

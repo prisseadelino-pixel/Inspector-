@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AD Contrôle</title>
+  <title>Chipeur arrête de Shipper</title>
 
   <!-- Liens pour l'icône de l'application et le manifest -->
-  <link rel="icon" type="image/png" href="https://i49.servimg.com/u/f49/11/31/89/70/17848310.png">
+  <link rel="icon" type="image/png" href="logo.png">
   <link rel="manifest" href="manifest.json">
 
   <style>
@@ -392,9 +392,9 @@
   <!-- ACCUEIL -->
   <div id="home-screen">
     <div class="logo-container">
-      <img src="https://i49.servimg.com/u/f49/11/31/89/70/17848310.png" alt="AD Contrôle Logo">
+      <img src="logo.png" alt="Chipeur Logo">
     </div>
-    <h1 class="app-title">AD Contrôle</h1>
+    <h1 class="app-title">Chipeur, arrête de Shipper&nbsp;!</h1>
     <p class="app-subtitle">Prenez en photo vos préparations de commandes et gardez une preuve visuelle incontestable.</p>
     <button class="btn-start" id="btnCommencer">🚀 Lancer les préparations</button>
   </div>
@@ -403,13 +403,13 @@
   <div id="app-screen">
     <header>
       <div class="header-brand">
-        <img src="https://i49.servimg.com/u/f49/11/31/89/70/17848310.png" alt="Logo">
-        <h1>AD Contrôle</h1>
+        <img src="logo.png" alt="Logo">
+        <h1>Chipeur, arrête de Shipper&nbsp;!</h1>
       </div>
       <button class="btn-nav-home" id="btnRetourAccueil">🏠 Accueil</button>
     </header>
 
-    <!-- SECTION RECHERCHE -->
+    <!-- SECTION RECHERCHE AVEC BOUTON -->
     <section class="card" style="padding: 1rem;">
       <div class="search-box">
         <input type="text" id="recherche" placeholder="🔍 Rechercher par numéro..." autocomplete="off">
@@ -420,23 +420,18 @@
     <!-- NOUVELLE PREPARATION -->
     <section class="card" id="sectionPreparation">
       <h2 id="formTitle" style="font-size: 1.1rem; margin-bottom:1rem; color:var(--primary);">Nouvelle Préparation</h2>
-      
       <div class="form-group">
         <label for="numeroCommande">Numéro de Commande</label>
         <input type="text" id="numeroCommande" name="no_autofill_cmd" autocomplete="off">
-      </div>
-
-      <!-- NOUVEAU CHAMP : DATE ET HEURE -->
-      <div class="form-group">
-        <label for="dateCommande">Date et Heure de préparation</label>
-        <input type="datetime-local" id="dateCommande">
       </div>
 
       <div class="form-group">
         <label>Photo du colis / préparation</label>
         <img id="photoPreview" alt="Aperçu photo">
         
+        <!-- Input pour Galerie -->
         <input type="file" id="fileGallery" accept="image/*" style="display: none;">
+        <!-- Input pour Appareil Photo -->
         <input type="file" id="fileCamera" accept="image/*" capture="environment" style="display: none;">
         
         <div class="camera-controls">
@@ -485,7 +480,7 @@
     btnCommencer.addEventListener('click', () => {
       homeScreen.style.display = 'none';
       appScreen.style.display = 'block';
-      reinitialiserFormulaire();
+      document.getElementById('numeroCommande').value = "";
     });
 
     btnRetourAccueil.addEventListener('click', () => {
@@ -501,7 +496,6 @@
     let modeEditionId = null;
 
     const inputNumero = document.getElementById('numeroCommande');
-    const inputDate = document.getElementById('dateCommande');
     const inputNotes = document.getElementById('notes');
     const photoPreview = document.getElementById('photoPreview');
     
@@ -524,15 +518,8 @@
     const modalNotes = document.getElementById('modalNotes');
     const closeModal = document.getElementById('closeModal');
 
-    // Fonction pour mettre la date/heure actuelle au format input datetime-local
-    function setDateMaintenant() {
-      const now = new Date();
-      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-      inputDate.value = now.toISOString().slice(0, 16);
-    }
-
     window.addEventListener('DOMContentLoaded', () => {
-      reinitialiserFormulaire();
+      inputNumero.value = "";
       afficherGalerie();
     });
 
@@ -585,7 +572,6 @@
     btnEnregistrer.addEventListener('click', () => {
       const numero = inputNumero.value.trim();
       const notes = inputNotes.value.trim();
-      const dateSelectionnee = inputDate.value ? new Date(inputDate.value).toLocaleString('fr-FR') : new Date().toLocaleString('fr-FR');
 
       if (!numero || !imageCaptureeData) {
         alert("Veuillez renseigner un numéro et ajouter une photo.");
@@ -598,7 +584,6 @@
           commandes[index].numero = numero;
           commandes[index].notes = notes;
           commandes[index].photo = imageCaptureeData;
-          commandes[index].date = dateSelectionnee;
         }
       } else {
         commandes.unshift({
@@ -606,7 +591,7 @@
           numero: numero,
           photo: imageCaptureeData,
           notes: notes,
-          date: dateSelectionnee
+          date: new Date().toLocaleString('fr-FR')
         });
       }
 
@@ -629,7 +614,6 @@
       inputNotes.value = "";
       fileGallery.value = "";
       fileCamera.value = "";
-      setDateMaintenant();
       btnEnregistrer.textContent = "Enregistrer la préparation";
       btnAnnulerEdit.style.display = "none";
       formTitle.textContent = "Nouvelle Préparation";
@@ -680,14 +664,6 @@
         reinitialiserFormulaire();
         afficherGalerie();
       }
-    });
-
-    btnLancerRecherche.addEventListener('click', () => {
-      afficherGalerie(inputRecherche.value);
-    });
-
-    inputRecherche.addEventListener('keyup', (e) => {
-      afficherGalerie(inputRecherche.value);
     });
 
     function afficherGalerie(filtre = "") {

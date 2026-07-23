@@ -1,13 +1,19 @@
 {
-  "name": "Chipeur arrête de Shipper",
-  "short_name": "Chipeur",
+  "name": "AD Contrôle",
+  "short_name": "AD Contrôle",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffedd5",
+  "background_color": "#f8fafc",
   "theme_color": "#ea580c",
   "icons": [
     {
-      "src": "logo.png",
+      "src": "https://i49.servimg.com/u/f49/11/31/89/70/17848310.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://i49.servimg.com/u/f49/11/31/89/70/17848310.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

@@ -237,6 +237,16 @@
       width: 100%;
     }
 
+    .input-date-compact {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem;
+      font-size: 0.85rem;
+      color: var(--text);
+      outline: none;
+      background: white;
+    }
+
     button.btn-pdf {
       background-color: #0284c7;
       color: white;
@@ -275,6 +285,8 @@
     .header-actions {
       display: flex;
       gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
     /* --- LISTE COMPACTE D'HISTORIQUE --- */
@@ -544,6 +556,7 @@
       <div class="section-header">
         <h2>Historique des Preuves</h2>
         <div class="header-actions">
+          <input type="date" id="dateFiltreExport" class="input-date-compact" title="Choisir une date pour l'export">
           <button class="btn-pdf" id="btnExportPDF">📄 Exporter PDF</button>
           <button class="btn-danger" id="btnViderHistorique">🗑️ Vider</button>
         </div>
@@ -607,6 +620,7 @@
     const btnLancerRecherche = document.getElementById('btnLancerRecherche');
     const btnViderHistorique = document.getElementById('btnViderHistorique');
     const btnExportPDF = document.getElementById('btnExportPDF');
+    const dateFiltreExport = document.getElementById('dateFiltreExport');
 
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImg');
@@ -824,24 +838,43 @@
       if (e.key === 'Enter') executerRecherche();
     });
 
-    // --- FONCTION EXPORT EN PDF ---
+    // --- FONCTION EXPORT EN PDF AVEC FILTRE DE DATE ---
     btnExportPDF.addEventListener('click', () => {
-      if (commandes.length === 0) {
-        alert("L'historique est vide, aucun document à exporter.");
-        return;
+      const dateSelect = dateFiltreExport.value;
+      let listeAExporter = commandes;
+      let titreExport = "Historique Complet des Preuves";
+
+      if (dateSelect) {
+        // Formater YYYY-MM-DD en DD/MM/YYYY pour correspondre à notre sauvegarde
+        const parts = dateSelect.split('-');
+        const dateFormatee = `${parts[2]}/${parts[1]}/${parts[0]}`;
+        
+        // Filtrer les commandes dont la date commence par la date choisie
+        listeAExporter = commandes.filter(cmd => cmd.date.startsWith(dateFormatee));
+        titreExport = `Historique des Preuves - Date : ${dateFormatee}`;
+
+        if (listeAExporter.length === 0) {
+          alert(`Aucune commande trouvée pour la date du ${dateFormatee}.`);
+          return;
+        }
+      } else {
+        if (commandes.length === 0) {
+          alert("L'historique est vide, aucun document à exporter.");
+          return;
+        }
       }
 
       const printArea = document.getElementById('print-area');
-      const dateExport = new Date().toLocaleString('fr-FR');
+      const dateHeureExport = new Date().toLocaleString('fr-FR');
 
       // Construction du document HTML d'impression
       let html = `
-        <div class="print-title">Chipeur, arrête de Shipper ! - Historique des Preuves</div>
-        <div class="print-subtitle">Document généré le ${dateExport} - Total : ${commandes.length} preuve(s)</div>
+        <div class="print-title">${titreExport}</div>
+        <div class="print-subtitle">Document généré le ${dateHeureExport} - Total : ${listeAExporter.length} preuve(s)</div>
         <div class="print-grid">
       `;
 
-      commandes.forEach(cmd => {
+      listeAExporter.forEach(cmd => {
         html += `
           <div class="print-card">
             <h3>Commande : ${cmd.numero}</h3>
@@ -855,7 +888,7 @@
       html += `</div>`;
       printArea.innerHTML = html;
 
-      // Déclenchement de l'impression native (choisir 'Enregistrer au format PDF')
+      // Déclenchement de l'impression native
       window.print();
     });
   </script>

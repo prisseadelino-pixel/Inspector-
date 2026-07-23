@@ -237,6 +237,22 @@
       width: 100%;
     }
 
+    button.btn-pdf {
+      background-color: #0284c7;
+      color: white;
+      border: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button.btn-pdf:hover {
+      background-color: #0369a1;
+    }
+
     button.btn-danger {
       background-color: #ef4444;
       color: white;
@@ -252,6 +268,13 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
     }
 
     /* --- LISTE COMPACTE D'HISTORIQUE --- */
@@ -385,6 +408,71 @@
       cursor: pointer;
       z-index: 1001;
     }
+
+    /* --- STYLES D'IMPRESSION (GENERATION PDF) --- */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 20px;
+      }
+      .print-title {
+        font-size: 22px;
+        color: #ea580c;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      .print-subtitle {
+        font-size: 12px;
+        color: #64748b;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #ea580c;
+        padding-bottom: 10px;
+      }
+      .print-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+      .print-card {
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px;
+        page-break-inside: avoid;
+        background: #ffffff;
+      }
+      .print-card h3 {
+        font-size: 16px;
+        color: #0f172a;
+        margin-bottom: 4px;
+      }
+      .print-card .date {
+        font-size: 11px;
+        color: #64748b;
+        margin-bottom: 8px;
+      }
+      .print-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+      }
+      .print-card .notes {
+        font-size: 12px;
+        color: #334155;
+        margin-top: 6px;
+        font-style: italic;
+      }
+    }
   </style>
 </head>
 <body>
@@ -455,11 +543,17 @@
     <section class="card">
       <div class="section-header">
         <h2>Historique des Preuves</h2>
-        <button class="btn-danger" id="btnViderHistorique">🗑️ Vider l'historique</button>
+        <div class="header-actions">
+          <button class="btn-pdf" id="btnExportPDF">📄 Exporter PDF</button>
+          <button class="btn-danger" id="btnViderHistorique">🗑️ Vider</button>
+        </div>
       </div>
       <div class="liste-commandes" id="galerieCommandes"></div>
     </section>
   </div>
+
+  <!-- ZONE INVISIBLE DÉDIÉE À L'IMPRESSION PDF -->
+  <div id="print-area"></div>
 
   <!-- MODAL ZOOM PHOTO & COMMENTAIRE -->
   <div id="imageModal" class="modal">
@@ -512,6 +606,7 @@
     const inputRecherche = document.getElementById('recherche');
     const btnLancerRecherche = document.getElementById('btnLancerRecherche');
     const btnViderHistorique = document.getElementById('btnViderHistorique');
+    const btnExportPDF = document.getElementById('btnExportPDF');
 
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImg');
@@ -712,7 +807,7 @@
       if (e.target === modal) modal.style.display = "none";
     });
 
-    // FONCTION DE RECHERCHE ET MASQUAGE DE LA ZONE PREPARATION
+    // FONCTION DE RECHERCHE
     function executerRecherche() {
       const valeur = inputRecherche.value.trim();
       if (valeur !== "") {
@@ -723,17 +818,45 @@
       afficherGalerie(valeur);
     }
 
-    // Déclenchement sur clic du bouton
     btnLancerRecherche.addEventListener('click', executerRecherche);
-
-    // Déclenchement automatique lors de la saisie au clavier
     inputRecherche.addEventListener('input', executerRecherche);
-
-    // Touche Entrée dans le champ de recherche
     inputRecherche.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        executerRecherche();
+      if (e.key === 'Enter') executerRecherche();
+    });
+
+    // --- FONCTION EXPORT EN PDF ---
+    btnExportPDF.addEventListener('click', () => {
+      if (commandes.length === 0) {
+        alert("L'historique est vide, aucun document à exporter.");
+        return;
       }
+
+      const printArea = document.getElementById('print-area');
+      const dateExport = new Date().toLocaleString('fr-FR');
+
+      // Construction du document HTML d'impression
+      let html = `
+        <div class="print-title">Chipeur, arrête de Shipper ! - Historique des Preuves</div>
+        <div class="print-subtitle">Document généré le ${dateExport} - Total : ${commandes.length} preuve(s)</div>
+        <div class="print-grid">
+      `;
+
+      commandes.forEach(cmd => {
+        html += `
+          <div class="print-card">
+            <h3>Commande : ${cmd.numero}</h3>
+            <div class="date">Date : ${cmd.date}</div>
+            <img src="${cmd.photo}" alt="Preuve commande ${cmd.numero}">
+            ${cmd.notes ? `<div class="notes">💬 ${cmd.notes}</div>` : ''}
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      printArea.innerHTML = html;
+
+      // Déclenchement de l'impression native (choisir 'Enregistrer au format PDF')
+      window.print();
     });
   </script>
 </body>

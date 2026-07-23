@@ -41,22 +41,28 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      padding: 2rem 1rem;
+      padding: 1rem;
       text-align: center;
       background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
     }
 
     .logo-container {
-      max-width: 600px; /* Logo de l'accueil agrandi pour remplir l'espace */
-      width: 100%;
-      margin-bottom: 1.5rem;
+      width: 90%;
+      max-width: 550px; /* Taille fortement agrandie */
+      margin-bottom: 2rem;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .logo-container img {
+    .logo-container a {
       width: 100%;
+      display: block;
+    }
+
+    .logo-container img {
+      width: 100% !important;
+      max-width: none !important;
       height: auto;
       object-fit: contain;
       filter: contrast(135%) brightness(112%);
@@ -64,10 +70,11 @@
     }
 
     .app-subtitle {
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       color: #64748b;
-      max-width: 450px;
+      max-width: 480px;
       margin-bottom: 2rem;
+      line-height: 1.4;
     }
 
     .btn-start {
@@ -109,7 +116,7 @@
     }
 
     .header-brand img {
-      max-height: 45px; /* Logo d'en-tête conservé intact */
+      max-height: 45px; /* Toujours intact pour l'en-tête */
       width: auto;
       object-fit: contain;
       flex-shrink: 0;
@@ -499,7 +506,7 @@
         <img src="https://i49.servimg.com/u/f49/11/31/89/70/17848310.png" style="border:0;" alt="AD Contrôle Logo" />
       </a>
     </div>
-    <p class="app-subtitle">Prenez en photo vos préparations de commandes et gardez une preuve visuelle incontestable.</p>
+    <p class="app-subtitle">Prenez en photo vos preparations de commandes et gardez une preuve visuelle incontestable.</p>
     <button class="btn-start" id="btnCommencer">🚀 Lancer les préparations</button>
   </div>
 

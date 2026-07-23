@@ -47,7 +47,7 @@
     }
 
     .logo-container {
-      max-width: 280px;
+      max-width: 300px;
       width: 100%;
       margin-bottom: 1.5rem;
       display: flex;
@@ -59,7 +59,9 @@
       width: 100%;
       height: auto;
       object-fit: contain;
-      mix-blend-mode: multiply; /* Fusionne le fond blanc de l'image avec le fond orangé */
+      /* Élimine le rectangle gris en poussant le fond au blanc pur puis en le fondant */
+      filter: contrast(135%) brightness(112%);
+      mix-blend-mode: multiply;
     }
 
     .app-subtitle {
@@ -112,6 +114,7 @@
       width: auto;
       object-fit: contain;
       flex-shrink: 0;
+      filter: contrast(135%) brightness(112%);
       mix-blend-mode: multiply;
     }
 
@@ -497,7 +500,7 @@
         <img src="https://i49.servimg.com/u/f49/11/31/89/70/17848310.png" style="border:0;" alt="AD Contrôle Logo" />
       </a>
     </div>
-    <p class="app-subtitle">Prenez en photo vos preparations de commandes et gardez une preuve visuelle incontestable.</p>
+    <p class="app-subtitle">Prenez en photo vos préparations de commandes et gardez une preuve visuelle incontestable.</p>
     <button class="btn-start" id="btnCommencer">🚀 Lancer les préparations</button>
   </div>
 
@@ -853,11 +856,9 @@
       let titreExport = "Historique Complet des Preuves";
 
       if (dateSelect) {
-        // Formater YYYY-MM-DD en DD/MM/YYYY
         const parts = dateSelect.split('-');
         const dateFormatee = `${parts[2]}/${parts[1]}/${parts[0]}`;
         
-        // Filtrer les commandes dont la date commence par la date choisie
         listeAExporter = commandes.filter(cmd => cmd.date.startsWith(dateFormatee));
         titreExport = `Historique des Preuves - Date : ${dateFormatee}`;
 
@@ -875,7 +876,6 @@
       const printArea = document.getElementById('print-area');
       const dateHeureExport = new Date().toLocaleString('fr-FR');
 
-      // Construction du document HTML d'impression
       let html = `
         <div class="print-title">${titreExport}</div>
         <div class="print-subtitle">Document généré le ${dateHeureExport} - Total : ${listeAExporter.length} preuve(s)</div>
@@ -896,7 +896,6 @@
       html += `</div>`;
       printArea.innerHTML = html;
 
-      // Déclenchement de l'impression native
       window.print();
     });
   </script>

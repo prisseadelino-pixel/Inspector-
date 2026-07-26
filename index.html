@@ -120,7 +120,6 @@
       mix-blend-mode: multiply;
     }
 
-    /* CONTENEUR DE L'EN-TÊTE DROITE ET DROPDOWN ALIGNÉ SOUS L'ACCUEIL */
     .header-controls {
       display: flex;
       flex-direction: column;
@@ -288,7 +287,6 @@
       width: 100%;
     }
 
-    /* FILTRE PAR DATE ET BOUTON PDF */
     .export-filter-container {
       display: flex;
       flex-direction: column;
@@ -346,7 +344,6 @@
       margin-bottom: 0.5rem;
     }
 
-    /* HISTORIQUE */
     .liste-commandes {
       display: flex;
       flex-direction: column;
@@ -424,7 +421,6 @@
       background: #fee2e2;
     }
 
-    /* MODAL ZOOM IMAGE */
     .modal {
       display: none;
       position: fixed;
@@ -479,7 +475,6 @@
       z-index: 1001;
     }
 
-    /* STYLES IMPRESSION */
     @media print {
       body * {
         visibility: hidden;
@@ -554,7 +549,7 @@
         <img class="home-logo-img" src="https://i49.servimg.com/u/f49/11/31/89/70/17848310.png" style="border:0;" alt="AD Contrôle Logo" />
       </a>
     </div>
-    <p class="app-subtitle">Prenez en photo vos preparations de commandes et gardez une preuve visuelle incontestable.</p>
+    <p class="app-subtitle">Prenez en photo vos préparations de commandes et gardez une preuve visuelle incontestable.</p>
     <button class="btn-start" id="btnCommencer">🚀 Lancer les préparations</button>
   </div>
 
@@ -567,7 +562,6 @@
         </a>
       </div>
       
-      <!-- BOUTON ACCUEIL + MENU PLACÉ JUSTE EN-DESSOUS -->
       <div class="header-controls">
         <button class="btn-nav-home" id="btnRetourAccueil">🏠 Accueil</button>
         <button class="btn-menu-hamburger" id="btnMenu" title="Menu options">☰</button>
@@ -638,7 +632,6 @@
     </section>
   </div>
 
-  <!-- ZONE DÉDIÉE À L'IMPRESSION PDF -->
   <div id="print-area"></div>
 
   <!-- MODAL ZOOM PHOTO -->
@@ -650,14 +643,33 @@
     </div>
   </div>
 
+  <!-- SDK FIREBASE COMPAT (Simple d'utilisation) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
   <script>
+    // CONFIGURATION FIREBASE
+    const firebaseConfig = {
+      apiKey: "AIzaSyAsYfXgNnrskxOwgX081lv",
+      authDomain: "ad-controle.firebaseapp.com",
+      databaseURL: "https://ad-controle-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "ad-controle",
+      storageBucket: "ad-controle.firebaseapp.com",
+      messagingSenderId: "745097117764",
+      appId: "1:745097117764:web:59feae933",
+      measurementId: "G-RZ3Q22WDH6"
+    };
+
+    // Initialisation
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     const homeScreen = document.getElementById('home-screen');
     const appScreen = document.getElementById('app-screen');
     const btnCommencer = document.getElementById('btnCommencer');
     const btnRetourAccueil = document.getElementById('btnRetourAccueil');
     const sectionPreparation = document.getElementById('sectionPreparation');
 
-    // GESTION MENU DROPDOWN (3 TRAITS)
     const btnMenu = document.getElementById('btnMenu');
     const dropdownMenu = document.getElementById('dropdownMenu');
 
@@ -684,7 +696,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    let commandes = JSON.parse(localStorage.getItem('commandes_prepa')) || [];
+    let commandes = [];
     let imageCaptureeData = "";
     let modeEditionId = null;
 
@@ -713,9 +725,18 @@
     const modalNotes = document.getElementById('modalNotes');
     const closeModal = document.getElementById('closeModal');
 
-    window.addEventListener('DOMContentLoaded', () => {
-      inputNumero.value = "";
-      afficherGalerie();
+    // ECOUTE EN TEMPS REEL DE FIREBASE
+    db.ref('commandes').on('value', (snapshot) => {
+      const data = snapshot.val();
+      commandes = [];
+      if (data) {
+        Object.keys(data).forEach(key => {
+          commandes.push(data[key]);
+        });
+        // Tri par ordre le plus récent
+        commandes.sort((a, b) => b.id - a.id);
+      }
+      afficherGalerie(inputRecherche.value);
     });
 
     function compresserImage(dataUrl, callback) {
@@ -773,32 +794,23 @@
         return;
       }
 
-      if (modeEditionId !== null) {
-        const index = commandes.findIndex(c => c.id === modeEditionId);
-        if (index !== -1) {
-          commandes[index].numero = numero;
-          commandes[index].notes = notes;
-          commandes[index].photo = imageCaptureeData;
-        }
-      } else {
-        commandes.unshift({
-          id: Date.now(),
-          numero: numero,
-          photo: imageCaptureeData,
-          notes: notes,
-          date: new Date().toLocaleString('fr-FR')
+      const idObjet = modeEditionId !== null ? modeEditionId : Date.now();
+      const commandeData = {
+        id: idObjet,
+        numero: numero,
+        photo: imageCaptureeData,
+        notes: notes,
+        date: modeEditionId !== null ? commandes.find(c => c.id === modeEditionId).date : new Date().toLocaleString('fr-FR')
+      };
+
+      // SAUVEGARDE DIRECTE DANS FIREBASE
+      db.ref('commandes/' + idObjet).set(commandeData)
+        .then(() => {
+          reinitialiserFormulaire();
+        })
+        .catch((error) => {
+          alert("Erreur d'enregistrement Firebase : " + error.message);
         });
-      }
-
-      try {
-        localStorage.setItem('commandes_prepa', JSON.stringify(commandes));
-      } catch (e) {
-        alert("Mémoire saturée ! Videz l'historique pour ajouter de nouvelles photos.");
-        return;
-      }
-
-      reinitialiserFormulaire();
-      afficherGalerie();
     });
 
     function reinitialiserFormulaire() {
@@ -845,20 +857,22 @@
       if (!item) return;
 
       if (confirm(`Voulez-vous vraiment supprimer la commande ${item.numero} ?`)) {
-        commandes = commandes.filter(c => c.id !== id);
-        localStorage.setItem('commandes_prepa', JSON.stringify(commandes));
-        if (modeEditionId === id) reinitialiserFormulaire();
-        afficherGalerie(inputRecherche.value);
+        // SUPPRESSION DANS FIREBASE
+        db.ref('commandes/' + id).remove()
+          .then(() => {
+            if (modeEditionId === id) reinitialiserFormulaire();
+          });
       }
     };
 
     btnViderHistorique.addEventListener('click', () => {
       dropdownMenu.classList.remove('show');
-      if (confirm("Voulez-vous vraiment effacer tout l'historique des photos ?")) {
-        commandes = [];
-        localStorage.removeItem('commandes_prepa');
-        reinitialiserFormulaire();
-        afficherGalerie();
+      if (confirm("Voulez-vous vraiment effacer TOUT l'historique de la base de données ?")) {
+        // EFFACER TOUTE LA BASE FIREBASE
+        db.ref('commandes').remove()
+          .then(() => {
+            reinitialiserFormulaire();
+          });
       }
     });
 

@@ -643,12 +643,11 @@
     </div>
   </div>
 
-  <!-- SDK FIREBASE COMPAT (Simple d'utilisation) -->
+  <!-- SDK FIREBASE COMPAT -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
   <script>
-    // CONFIGURATION FIREBASE
     const firebaseConfig = {
       apiKey: "AIzaSyAsYfXgNnrskxOwgX081lv",
       authDomain: "ad-controle.firebaseapp.com",
@@ -660,7 +659,6 @@
       measurementId: "G-RZ3Q22WDH6"
     };
 
-    // Initialisation
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
@@ -733,19 +731,21 @@
         Object.keys(data).forEach(key => {
           commandes.push(data[key]);
         });
-        // Tri par ordre le plus récent
         commandes.sort((a, b) => b.id - a.id);
       }
       afficherGalerie(inputRecherche.value);
+    }, (error) => {
+      alert("Erreur de lecture Firebase : " + error.message + "\nAssurez-vous que les Règles sont bien 'true'.");
     });
 
+    // COMPRESSION OPTIMISÉE POUR FIREBASE
     function compresserImage(dataUrl, callback) {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
         let width = img.width;
         let height = img.height;
-        const maxDimension = 600;
+        const maxDimension = 500; // Taille optimale
 
         if (width > height && width > maxDimension) {
           height *= maxDimension / width;
@@ -759,7 +759,7 @@
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
-        callback(canvas.toDataURL('image/jpeg', 0.5));
+        callback(canvas.toDataURL('image/jpeg', 0.4)); // Qualité très bien compressée
       };
       img.src = dataUrl;
     }
@@ -794,6 +794,9 @@
         return;
       }
 
+      btnEnregistrer.disabled = true;
+      btnEnregistrer.textContent = "Enregistrement...";
+
       const idObjet = modeEditionId !== null ? modeEditionId : Date.now();
       const commandeData = {
         id: idObjet,
@@ -803,13 +806,16 @@
         date: modeEditionId !== null ? commandes.find(c => c.id === modeEditionId).date : new Date().toLocaleString('fr-FR')
       };
 
-      // SAUVEGARDE DIRECTE DANS FIREBASE
+      // SAUVEGARDE DANS FIREBASE AVEC GESTION D'ERREUR DÉTAILLÉE
       db.ref('commandes/' + idObjet).set(commandeData)
         .then(() => {
           reinitialiserFormulaire();
+          btnEnregistrer.disabled = false;
         })
         .catch((error) => {
-          alert("Erreur d'enregistrement Firebase : " + error.message);
+          btnEnregistrer.disabled = false;
+          btnEnregistrer.textContent = "Enregistrer la préparation";
+          alert("❌ ÉCHEC FIREBASE : " + error.message + "\nVérifiez vos règles dans la console Firebase.");
         });
     });
 
@@ -822,6 +828,7 @@
       fileGallery.value = "";
       fileCamera.value = "";
       btnEnregistrer.textContent = "Enregistrer la préparation";
+      btnEnregistrer.disabled = false;
       btnAnnulerEdit.style.display = "none";
       formTitle.textContent = "Nouvelle Préparation";
     }
@@ -857,7 +864,6 @@
       if (!item) return;
 
       if (confirm(`Voulez-vous vraiment supprimer la commande ${item.numero} ?`)) {
-        // SUPPRESSION DANS FIREBASE
         db.ref('commandes/' + id).remove()
           .then(() => {
             if (modeEditionId === id) reinitialiserFormulaire();
@@ -868,7 +874,6 @@
     btnViderHistorique.addEventListener('click', () => {
       dropdownMenu.classList.remove('show');
       if (confirm("Voulez-vous vraiment effacer TOUT l'historique de la base de données ?")) {
-        // EFFACER TOUTE LA BASE FIREBASE
         db.ref('commandes').remove()
           .then(() => {
             reinitialiserFormulaire();

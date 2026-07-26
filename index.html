@@ -54,7 +54,6 @@
       margin-bottom: 2rem;
     }
 
-    /* LOGO D'ACCUEIL GRAND */
     .home-logo-img {
       width: 85vw !important;
       max-width: 600px !important;
@@ -112,7 +111,6 @@
       flex: 1;
     }
 
-    /* LOGO DE L'EN-TÊTE FIXÉ À 65PX */
     .header-brand img {
       max-height: 65px !important;
       width: auto !important;
@@ -120,6 +118,15 @@
       flex-shrink: 0;
       filter: contrast(135%) brightness(112%);
       mix-blend-mode: multiply;
+    }
+
+    /* CONTENEUR DE L'EN-TÊTE DROITE ET DROPDOWN ALIGNÉ SOUS L'ACCUEIL */
+    .header-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      position: relative;
+      gap: 0.3rem;
     }
 
     .btn-nav-home {
@@ -133,6 +140,62 @@
       flex-shrink: 0;
     }
 
+    .btn-menu-hamburger {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--secondary);
+      padding: 0.25rem 0.6rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      z-index: 100;
+      min-width: 200px;
+      overflow: hidden;
+      margin-top: 0.4rem;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-item {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      background: none;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background 0.2s ease;
+    }
+
+    .dropdown-item.danger {
+      color: #ef4444;
+    }
+
+    .dropdown-item:hover {
+      background: #f1f5f9;
+    }
+
     .card {
       background: var(--card-bg);
       border-radius: var(--radius);
@@ -142,7 +205,6 @@
       margin-bottom: 1.5rem;
     }
 
-    /* BARRE DE RECHERCHE ET BOUTON */
     .search-box {
       display: flex;
       gap: 0.5rem;
@@ -226,7 +288,7 @@
       width: 100%;
     }
 
-    /* FILTRE PAR DATE ET BOUTONS PDF / VIDER */
+    /* FILTRE PAR DATE ET BOUTON PDF */
     .export-filter-container {
       display: flex;
       flex-direction: column;
@@ -280,23 +342,11 @@
       background-color: #0369a1;
     }
 
-    button.btn-danger {
-      background-color: #ef4444;
-      color: white;
-      border: none;
-      padding: 0.6rem 0.85rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
     .section-header {
       margin-bottom: 0.5rem;
     }
 
-    /* --- LISTE COMPACTE D'HISTORIQUE --- */
+    /* HISTORIQUE */
     .liste-commandes {
       display: flex;
       flex-direction: column;
@@ -374,7 +424,7 @@
       background: #fee2e2;
     }
 
-    /* --- MODAL ZOOM IMAGE --- */
+    /* MODAL ZOOM IMAGE */
     .modal {
       display: none;
       position: fixed;
@@ -429,7 +479,7 @@
       z-index: 1001;
     }
 
-    /* --- STYLES D'IMPRESSION (GENERATION PDF) --- */
+    /* STYLES IMPRESSION */
     @media print {
       body * {
         visibility: hidden;
@@ -516,10 +566,21 @@
           <img src="https://i49.servimg.com/u/f49/11/31/89/70/17848310.png" style="border:0;" alt="AD Contrôle Logo" />
         </a>
       </div>
-      <button class="btn-nav-home" id="btnRetourAccueil">🏠 Accueil</button>
+      
+      <!-- BOUTON ACCUEIL + MENU PLACÉ JUSTE EN-DESSOUS -->
+      <div class="header-controls">
+        <button class="btn-nav-home" id="btnRetourAccueil">🏠 Accueil</button>
+        <button class="btn-menu-hamburger" id="btnMenu" title="Menu options">☰</button>
+        
+        <div class="dropdown-menu" id="dropdownMenu">
+          <button class="dropdown-item danger" id="btnViderHistorique">
+            🗑️ Vider l'historique
+          </button>
+        </div>
+      </div>
     </header>
 
-    <!-- SECTION RECHERCHE AVEC BOUTON -->
+    <!-- SECTION RECHERCHE -->
     <section class="card" style="padding: 1rem;">
       <div class="search-box">
         <input type="text" id="recherche" placeholder="🔍 Rechercher par numéro..." autocomplete="off">
@@ -539,9 +600,7 @@
         <label>Photo du colis / préparation</label>
         <img id="photoPreview" alt="Aperçu photo">
         
-        <!-- Input pour Galerie -->
         <input type="file" id="fileGallery" accept="image/*" style="display: none;">
-        <!-- Input pour Appareil Photo -->
         <input type="file" id="fileCamera" accept="image/*" capture="environment" style="display: none;">
         
         <div class="camera-controls">
@@ -572,7 +631,6 @@
         <div class="export-actions-row">
           <input type="date" id="dateFiltreExport" class="input-date-custom">
           <button class="btn-pdf" id="btnExportPDF">📄 Exporter PDF</button>
-          <button class="btn-danger" id="btnViderHistorique">🗑️ Vider</button>
         </div>
       </div>
 
@@ -580,10 +638,10 @@
     </section>
   </div>
 
-  <!-- ZONE INVISIBLE DÉDIÉE À L'IMPRESSION PDF -->
+  <!-- ZONE DÉDIÉE À L'IMPRESSION PDF -->
   <div id="print-area"></div>
 
-  <!-- MODAL ZOOM PHOTO & COMMENTAIRE -->
+  <!-- MODAL ZOOM PHOTO -->
   <div id="imageModal" class="modal">
     <span class="modal-close" id="closeModal">&times;</span>
     <div class="modal-content-container">
@@ -598,6 +656,19 @@
     const btnCommencer = document.getElementById('btnCommencer');
     const btnRetourAccueil = document.getElementById('btnRetourAccueil');
     const sectionPreparation = document.getElementById('sectionPreparation');
+
+    // GESTION MENU DROPDOWN (3 TRAITS)
+    const btnMenu = document.getElementById('btnMenu');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    btnMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdownMenu.classList.toggle('show');
+    });
+
+    document.addEventListener('click', () => {
+      dropdownMenu.classList.remove('show');
+    });
 
     btnCommencer.addEventListener('click', () => {
       homeScreen.style.display = 'none';
@@ -782,6 +853,7 @@
     };
 
     btnViderHistorique.addEventListener('click', () => {
+      dropdownMenu.classList.remove('show');
       if (confirm("Voulez-vous vraiment effacer tout l'historique des photos ?")) {
         commandes = [];
         localStorage.removeItem('commandes_prepa');
@@ -836,7 +908,6 @@
       if (e.target === modal) modal.style.display = "none";
     });
 
-    // FONCTION DE RECHERCHE
     function executerRecherche() {
       const valeur = inputRecherche.value.trim();
       if (valeur !== "") {
@@ -853,7 +924,6 @@
       if (e.key === 'Enter') executerRecherche();
     });
 
-    // --- FONCTION EXPORT EN PDF AVEC FILTRE DE DATE ---
     btnExportPDF.addEventListener('click', () => {
       const dateSelect = dateFiltreExport.value;
       let listeAExporter = commandes;

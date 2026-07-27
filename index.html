@@ -738,14 +738,14 @@
       alert("Erreur de lecture Firebase : " + error.message + "\nAssurez-vous que les Règles sont bien 'true'.");
     });
 
-    // COMPRESSION OPTIMISÉE POUR FIREBASE
+    // COMPRESSION ÉQUILIBRÉE (IMAGE NETTE ET COMPATIBLE FIREBASE)
     function compresserImage(dataUrl, callback) {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
         let width = img.width;
         let height = img.height;
-        const maxDimension = 500; // Taille optimale
+        const maxDimension = 1200; // Taille max augmentée à 1200px pour garder du détail
 
         if (width > height && width > maxDimension) {
           height *= maxDimension / width;
@@ -759,7 +759,7 @@
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
-        callback(canvas.toDataURL('image/jpeg', 0.4)); // Qualité très bien compressée
+        callback(canvas.toDataURL('image/jpeg', 0.75)); // Qualité réglée à 75%
       };
       img.src = dataUrl;
     }
@@ -806,7 +806,7 @@
         date: modeEditionId !== null ? commandes.find(c => c.id === modeEditionId).date : new Date().toLocaleString('fr-FR')
       };
 
-      // SAUVEGARDE DANS FIREBASE AVEC GESTION D'ERREUR DÉTAILLÉE
+      // SAUVEGARDE DANS FIREBASE
       db.ref('commandes/' + idObjet).set(commandeData)
         .then(() => {
           reinitialiserFormulaire();
